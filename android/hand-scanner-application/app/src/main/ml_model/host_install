@@ -1,0 +1,64 @@
+#!/system/bin/sh
+# This should script should be invoked as the super user 'su'
+setenforce 0
+sleep 1
+LOG_FILE=/sdcard/boot.txt
+
+echo "$(date) - invoked as $USER" > $LOG_FILE
+rc=$?
+if [ $rc != 0 ]
+then
+	echo "Android sdcard not available yet. Exiting" >>/dev/stderr
+	echo "Android sdcard not available yet. Exiting"
+	exit $rc
+fi
+
+pm list packages | grep com.pathspottech.handscanner
+rc=$?
+
+echo "$(date) - Currently installed: $rc" >> $LOG_FILE
+# Check to install
+if [ $rc != 0 ]
+then
+	date 040400002021.00
+	hwclock --systohc
+	echo "$(date) - Installing" >> $LOG_FILE
+	pm install -r -g /system/pathspot/pathspot.apk 
+	echo "$(date) - installed $?" >> $LOG_FILE
+fi
+
+# check to setup device owner
+getprop ro.device_owner | grep true
+rc=$?
+echo "$(date) - double check $(id -u)" >> $LOG_FILE
+echo "$(date) - Is device owner: $rc" >> $LOG_FILE
+
+if [ $rc != 0 ]
+then
+	echo "$(date) - setting device owner" >> $LOG_FILE
+	dpm set-device-owner com.pathspottech.handscanner/.AdminReceiver
+	rc=$?
+	echo "$(date) - set device owner $rc" >> $LOG_FILE
+fi
+
+#check write settings
+appops get com.pathspottech.handscanner WRITE_SETTINGS | grep allow 
+rc=$?
+echo "$(date) - Checking if has write settings $rc" >> $LOG_FILE
+
+if [ $rc != 0 ]
+then
+	appops set com.pathspottech.handscanner WRITE_SETTINGS allow
+	tc=$?
+	echo "$(date) - granting write settings $tc" >> $LOG_FILE
+	rc=$(($rc + $tc))
+	am start -n com.pathspottech.handscanner/.LauncherActivity
+	echo "$(date) - launching app $tc" >> $LOG_FILE
+	rc=$(($rc + $tc))
+	if [ $rc != 0 ]
+	then
+		echo "$(date) - Failed to start the package. Trying again. $rc" >> $LOG_FILE
+	fi
+	echo "$(date) - finished setting device owner" >> $LOG_FILE
+fi
+# setenforce 1

@@ -1,0 +1,118 @@
+# Resolve react_native_pods.rb with node to allow for hoisting
+require Pod::Executable.execute_command('node', ['-p',
+  'require.resolve(
+    "react-native/scripts/react_native_pods.rb",
+    {paths: [process.argv[1]]},
+  )', __dir__]).strip
+
+platform :ios, '16.4'
+prepare_react_native_project!
+
+ENV['RCT_NEW_ARCH_ENABLED'] = '0' unless ENV.key?('RCT_NEW_ARCH_ENABLED')
+
+linkage = ENV['USE_FRAMEWORKS']
+if linkage != nil
+  Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
+  use_frameworks! :linkage => :static
+end
+
+# below is for: https://www.npmjs.com/package/react-native-permissions
+def node_require(script)
+  # Resolve script with node to allow for hoisting
+  require Pod::Executable.execute_command('node', ['-p',
+    "require.resolve(
+      '#{script}',
+      {paths: [process.argv[1]]},
+    )", __dir__]).strip
+end
+  
+node_require('react-native/scripts/react_native_pods.rb')
+node_require('react-native-permissions/scripts/setup.rb')
+
+# list of additional permissions included in link for `react-native-permissions`
+setup_permissions([
+  'Bluetooth'
+])
+
+production = ENV["PRODUCTION"] == "1"
+
+abstract_target 'SafetySuiteCommonPods' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  # use_frameworks!
+  config = use_native_modules!
+
+  pod 'react-native-config', :path => '../node_modules/react-native-config'
+  # For extensions without React dependencies
+  pod 'react-native-config/Extension', :path => '../node_modules/react-native-config'
+
+  use_react_native!(
+    :path => config[:reactNativePath],
+    # An absolute path to your application root.
+    :app_path => "#{Pod::Config.instance.installation_root}/..",
+  )
+
+  # Pods for demo
+  # Provide NitroModules podspec from node_modules
+  pod 'NitroModules', :path => '../node_modules/react-native-nitro-modules'
+
+
+  target 'PathSpotSafetySuiteTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+  target 'SafetySuite staging' do
+  end
+ 
+  target 'SafetySuite demo' do
+  end
+ 
+  target 'SafetySuite preprod' do
+  end
+
+  target 'SafetySuite' do
+  end
+
+  post_install do |installer|
+    react_native_post_install(
+      installer,
+      config[:reactNativePath],
+      :mac_catalyst_enabled => false
+    )
+
+    # (Keep your 16.4 + team loops if you want them)
+    installer.pods_project.targets.each do |t|
+      t.build_configurations.each do |bc|
+        # Ensure iOS 16.4 floor (optional if you already set it elsewhere)
+        bc.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.4'
+      end
+    end
+
+    installer.generated_projects.each do |project|
+      project.targets.each do |target|
+        target.build_configurations.each do |bc|
+          bc.build_settings['DEVELOPMENT_TEAM'] = 'VYZUJB4YWL'
+          bc.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.4'
+        end
+      end
+    end
+
+    # 🔒 Turn OFF Swift C++ interop for all Nitro/IAP pods
+    interop_off_names = [
+      'NitroModules',
+      'NitroIap',          # <-- this was missing
+      'react-native-iap',
+      'openiap'            # some installs expose this target too
+    ]
+
+    installer.pods_project.targets.each do |t|
+      if interop_off_names.include?(t.name) || t.name.downcase.include?('nitro') || t.name.downcase.include?('iap')
+        t.build_configurations.each do |bc|
+          bc.build_settings['SWIFT_ENABLE_CXX_INTEROP'] = 'NO'
+          # (Optional) Quiet C++ warnings
+          bc.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'gnu++20'
+        end
+      end
+    end
+  end
+end

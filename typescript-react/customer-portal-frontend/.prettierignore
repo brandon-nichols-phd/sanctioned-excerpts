@@ -1,0 +1,5 @@
+#Ignore index files
+*index.ts
+*index.tsx
+*index.d.ts
+*index.js

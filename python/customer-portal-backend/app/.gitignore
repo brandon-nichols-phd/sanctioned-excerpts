@@ -1,0 +1,6 @@
+.chalice/deployments/
+.chalice/venv/
+*/secrets.py
+*.pyc
+
+# Dynamically generated

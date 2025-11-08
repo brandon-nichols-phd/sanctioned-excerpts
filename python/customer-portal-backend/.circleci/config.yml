@@ -1,0 +1,82 @@
+version: 2.1
+
+orbs:
+  aws-cli: circleci/aws-cli@1.3.0
+
+jobs:
+
+  build_and_deploy_job:
+    working_directory: ~/python
+
+
+    docker:
+
+      # specify the version you desire here
+
+      - image: circleci/python:3.6.10
+
+
+    steps:
+
+      - checkout
+      - aws-cli/setup:
+          profile-name: example
+      - run: aws --version
+
+      - run:
+          name: Install python test dependencies
+
+          command: |
+              sudo pip3 install pip --upgrade
+              sudo pip3 install psycopg2-binary
+
+      # run tests
+      - run:
+
+          name: Run tests with code coverage
+
+          command: |
+            echo "testing current branch $CIRCLE_BRANCH"
+            ls
+            pwd
+
+      - run:
+          name: clean before uploading
+          command: |
+              cp .circleci/deploy_new_layers.py ~/.
+              rm -rf .git
+              rm -rf .circleci
+
+      - run:
+
+          name: upload to s3
+
+          command: |
+               mv backend python
+               zip -r python.zip python
+               aws s3 cp python.zip s3://webapp-lambda-backend-src/${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM}.zip
+
+      - run:
+          name: create layer from s3
+          command: |
+              AWS_REGION=us-east-1 aws lambda publish-layer-version \
+                  --layer-name webapp-lambda-${CIRCLE_BRANCH} \
+                  --description "Webapp backend lambda source " \
+                  --content S3Bucket=webapp-lambda-backend-src,S3Key=${CIRCLE_BRANCH}-${CIRCLE_BUILD_NUM}.zip \
+                  --compatible-runtimes python3.6
+
+      - run:
+          name: Deploy newest layers to functions
+          command: |
+               AWS_REGION=us-east-1 python3 ~/deploy_new_layers.py
+
+
+workflows:
+  build_and_deploy:
+    jobs:
+      - build_and_deploy_job:
+          context: aws-context
+          filters:
+            branches:
+              only:
+              - none

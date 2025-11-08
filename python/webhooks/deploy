@@ -1,0 +1,35 @@
+#!/bin/sh
+
+set -e
+
+# Display python version
+python --version
+
+# Ensure old local version of package is removed
+python -m pip uninstall -y backendlib
+
+# Get current Git branch name
+BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+if [ "$BRANCH" = "HEAD" ] || [ -z "$BRANCH" ]; then
+    echo "⚠️ Could not detect Git branch — using deploy stage"
+    # Use GitHub Actions env var if available, else fallback to local Git
+    if [ -n "$1" ]; then
+        BRANCH="$1"
+        echo "Using GitHub Actions branch: $BRANCH"
+    else
+        echo "⚠️ Could not detect git action branch from deploy stage, using default 'main'"
+        BRANCH="main"
+    fi
+fi
+
+# Pin latest commit from the branch into requirements.txt
+python pin_requirements.py $BRANCH
+
+# Install updated dependencies
+python -m pip install -r requirements.txt --upgrade
+
+# Clean Chalice deployment cache
+rm -rf .chalice/deployments/*
+
+# Deploy with Chalice using specified stage
+chalice deploy --stage "$1" --connection-timeout 60000

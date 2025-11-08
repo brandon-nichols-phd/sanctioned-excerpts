@@ -1,0 +1,45 @@
+name: Lint
+
+permissions: write-all
+
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the staging branch
+  push:
+    branches:
+      - staging
+  pull_request:
+    branches:
+      - staging
+
+jobs:
+  run-linters:
+    name: Run linters
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.GH_DEPLOY_KEY }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
+
+      - name: Install Python Lint dependencies
+        run: pip install black flake8
+
+      - name: Install package
+        run: |
+          git config --global url."https://${{ secrets.PAT }}@github".insteadOf https://github
+          pip install -r requirements.txt
+
+      - name: Run linters
+        uses: wearerequired/lint-action@v2
+        with:
+          black: true
+          flake8: true

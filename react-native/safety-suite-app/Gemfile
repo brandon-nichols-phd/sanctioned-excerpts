@@ -1,0 +1,17 @@
+source 'https://rubygems.org'
+
+# You may use http://rbenv.org/ or https://rvm.io/ to install and use this version
+ruby '>= 2.6.10'
+
+# Exclude problematic versions of cocoapods and activesupport that causes build failures.
+gem 'cocoapods', '>= 1.13', '!= 1.15.0', '!= 1.15.1'
+gem 'activesupport', '>= 6.1.7.5', '!= 7.1.0'
+
+# NEW: needed on Ruby 3.4+
+# Needed on Ruby 3.4+
+gem 'base64',     '>= 0.2.0', require: false
+gem 'logger',     '>= 1.6.0', require: false
+gem 'bigdecimal', '>= 3.1.8', require: false
+gem 'benchmark',  '>= 0.3.0', require: false
+gem 'ostruct',    '>= 0.6.0', require: false
+gem 'mutex_m',    '>= 0.2.0', require: false

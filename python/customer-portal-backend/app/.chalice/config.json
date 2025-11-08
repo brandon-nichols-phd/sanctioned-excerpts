@@ -1,0 +1,79 @@
+{
+  "version": "2.0",
+  "app_name": "app",
+  "lambda_timeout": 120,
+  "xray": true,
+  "environment_variables": {
+    "POWERTOOLS_SERVICE_NAME": "",
+    "POWERTOOLS_METRICS_NAMESPACE": "",
+    "REGION": "",
+    "USE_READ_REPLICA": "NO"
+  },
+  "stages": {
+    "prod": {
+      "autogen_policy": false,
+      "iam_policy_file": "iam_policy_prod.json",
+      "api_gateway_stage": "",
+      "lambda_memory_size": 1024,
+      "environment_variables": {
+        "ALLOWED_ORIGIN": "https://",
+        "DOMAIN": "",
+        "SM_KEY": "",
+        "EMAIL_SRC": "PROD"
+      }
+    },
+    "uae-prod": {
+      "autogen_policy": false,
+      "iam_policy_file": "iam_policy_prod.json",
+      "api_gateway_stage": "",
+      "lambda_memory_size": 1024,
+      "environment_variables": {
+        "SM_KEY": "",
+        "ALLOWED_ORIGIN": "",
+        "DOMAIN": "",
+        "EMAIL_SRC": "PROD",
+        "REGION": "",
+        "USE_READ_REPLICA": "YES"
+      }
+    },
+
+    "staging": {
+      "autogen_policy": false,
+      "iam_policy_file": "iam_policy_dev.json",
+      "api_gateway_stage": "",
+      "lambda_memory_size": 1024,
+      "environment_variables": {
+        "ALLOWED_ORIGIN": "",
+        "DOMAIN": "",
+        "SM_KEY": "",
+        "EMAIL_SRC": "STAGING"
+      }
+    },
+
+    "preprod": {
+      "autogen_policy": false,
+      "iam_policy_file": "iam_policy_dev.json",
+      "api_gateway_stage": "",
+      "lambda_memory_size": 1024,
+      "environment_variables": {
+        "ALLOWED_ORIGIN": "",
+        "DOMAIN": "",
+        "SM_KEY": "",
+        "EMAIL_SRC": "PRE_PROD"
+      }
+    },
+
+    "local": {
+      "autogen_policy": false,
+      "iam_policy_file": "iam_policy_dev.json",
+      "api_gateway_stage": "",
+      "lambda_memory_size": 1024,
+      "environment_variables": {
+        "ALLOWED_ORIGIN": "",
+        "DOMAIN": "",
+        "SM_KEY": "",
+        "EMAIL_SRC": "STAGING_LOCAL"
+      }
+    }
+  }
+}

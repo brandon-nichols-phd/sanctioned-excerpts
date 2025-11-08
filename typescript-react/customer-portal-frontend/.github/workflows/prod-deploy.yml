@@ -1,0 +1,39 @@
+name: Prod Deploy
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy:
+    if: startsWith(github.event.release.tag_name, 'prod-')
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: |
+          npm install --force
+          git config --global url."https://${{ secrets.PAT }}@github".insteadOf https://github
+
+      - name: Deploy
+        run: |
+          npm run deploy:prod
+          npm run clear-cache:prod
+        env:
+          CI: false
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: 'us-east-1'

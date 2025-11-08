@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+python3.9 --version
+python3.9 -m pip uninstall -y backendlib
+python3.9 -m pip install -r requirements.txt --upgrade
+rm -f .chalice/deployments/*
+python3.9 deploy_slacker.py $1 "webapp-customer-chalice" "$1" "Begining Deploy"
+chalice deploy --stage $1  --connection-timeout 60000
+python3.9 deploy_slacker.py $1 "webapp-customer-chalice" "$1" "Deploy Complete"

@@ -1,0 +1,5 @@
+admin_app/vendor/psycopg2
+app/vendor/psycopg2
+OLD_STUFF_FROM_DEV/.DS_Store
+*.DS_STORE
+*.history*

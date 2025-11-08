@@ -1,0 +1,43 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    repositories {
+        jcenter()
+        google()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.0.0'
+        classpath 'com.google.gms:google-services:4.3.3'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.5.2'
+        classpath 'com.google.zxing:android-core:3.3.0'
+        classpath 'com.google.zxing:core:3.3.0'
+
+    }
+}
+
+allprojects {
+    repositories {
+        maven { url "https://jitpack.io" }
+        maven { url 'https://raw.github.com/saki4510t/libcommon/master/repository/' }
+        maven { url 'https://mvnrepository.com/artifact/com.google.zxing/android-core'}
+        jcenter()
+        google()
+        maven { url 'https://maven.google.com' }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+ext {
+    supportLibVersion = '25.3.1'  // variable that can be referenced to keep support libs consistent
+    commonLibVersion= '1.5.20'
+    versionBuildTool = '25.0.2'
+    versionCompiler = 31
+    versionTarget = 28
+    versionNameString = '1.0.0'
+    javaSourceCompatibility = JavaVersion.VERSION_1_8
+    javaTargetCompatibility = JavaVersion.VERSION_1_8
+    var = '2.16.1'
+
+}

@@ -1,0 +1,33 @@
+{
+  "sensorId": "0fc34d49-dd0a-4c08-9042-9f831a9a351d",
+  "taIsOor": true,
+  "taValue": 1.89,
+  "taDataType": "TEMPERATURE",
+  "taStatus": "ALERT_SENT",
+  "taConsumedWhen": {
+    "str": "2023-07-14T14:06:33Z",
+    "epoch": 1689343593.299455,
+    "epoch_ms": 1689343593299.4548
+  },
+  "taAlertStartWhen": {
+    "str": "2023-07-14T14:04:39Z",
+    "epoch": 1689343479.45283,
+    "epoch_ms": 1689343479452.83
+  },
+  "saId": "6e11766c-bf28-49f8-a93f-6ead7bd87d69",
+  "criticality": "HIGH",
+  "highLimit": 10,
+  "lowLimit": 0.555556,
+  "duration": 7200,
+  "alertInC": false,
+  "recurrence": 86400,
+  "dataType": "TEMPERATURE",
+  "saActive": true,
+  "suppressUntil": null,
+  "lastReadingWhen": {
+    "str": "2025-05-23T09:05:19Z",
+    "epoch": 1747991119.3748,
+    "epoch_ms": 1747991119374.8
+  },
+  "saStartDatumId": null
+}

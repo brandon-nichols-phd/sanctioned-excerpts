@@ -1,0 +1,67 @@
+{
+  "name": "",
+  "version": "3.0.1",
+  "description": "Customer facing interface",
+  "author": {
+    "name": "Brandon S. Nichols, Ph.D.",
+    "url": "",
+    "github": ""
+  },
+  "contributors": [
+    {
+      "name": "Brandon S. Nichols",
+      "url": "https://pathspot.com/contact/"
+    }
+  ],
+  "homepage": ".",
+  "copyright": "Copyright 2020-2025 PathSpot Technologies, Inc.",
+  "license": "Proprietary",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "dependencies": {},
+  "scripts": {
+    "start": "react-app-rewired start",
+    "start:local": "env-cmd -e local react-app-rewired start",
+    "start:staging": "env-cmd -e staging react-app-rewired start",
+    "start:staging-local": "env-cmd -e staging-local react-app-rewired start",
+    "start:preprod": "env-cmd -e preprod-local react-app-rewired start",
+    "start:prod": "env-cmd -e production-local react-app-rewired start",
+    "build": "react-app-rewired build",
+    "build:staging": "env-cmd -e staging react-app-rewired build",
+    "build:prod": "env-cmd -e production react-app-rewired build",
+    "build:preprod": "env-cmd -e preprod react-app-rewired build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "zip": "git archive -o coreui-pro-react-admin-template-starter-ts-v$npm_package_version.zip -9 HEAD",
+    "deploy:staging": "npm run build:staging && aws s3 sync build/ staging",
+    "clear-cache:staging": "aws cloudfront create-invalidation --distribution-id E10OHDBBK15OPO --paths /",
+    "deploy:prod": "npm run build:prod && aws s3 sync build/ prod",
+    "clear-cache:prod": "aws cloudfront create-invalidation --distribution-id E1EI7132ZX8GB3 --paths /",
+    "deploy:preprod": "npm run build:preprod && aws s3 sync build/ preprod",
+    "clear-cache:preprod": "aws cloudfront create-invalidation --distribution-id E261AQPQ9HXYHN --paths /"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "preproduction": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {}
+}

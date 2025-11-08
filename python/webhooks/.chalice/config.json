@@ -1,0 +1,72 @@
+{
+  "version": "2.0",
+  "app_name": "webhooks",
+  "lambda_timeout": 10,
+  "xray": true,
+  "environment_variables": {
+    "POWERTOOLS_SERVICE_NAME": "",
+    "POWERTOOLS_METRICS_NAMESPACE": "",
+    "DYNAMO_ID_EUI_TBL": "",
+    "CHALICE_STAGE": "default",
+    "CHALICE_APP_NAME": "webhooks"
+  },
+  "stages": {
+    "prod": {
+      "autogen_policy": false,
+      "iam_policy_file": "complete-policy.json",
+      "api_gateway_stage": "webhook_prod",
+      "lambda_memory_size": 1024,
+      "environment_variables": {
+        "SM_KEY": "",
+        "DOMAIN": "",
+        "EMAIL_SRC": "PROD",
+        "CHALICE_STAGE": "prod"
+      }
+    },
+    "preprod": {
+      "autogen_policy": false,
+      "iam_policy_file": "complete-policy.json",
+      "api_gateway_stage": "webhook_preprod",
+      "lambda_memory_size": 1024,
+      "environment_variables": {
+        "SM_KEY": "",
+        "DOMAIN": "",
+        "EMAIL_SRC": "PREPROD",
+        "CHALICE_STAGE": "preprod"
+      }
+    },
+    "staging": {
+      "autogen_policy": false,
+      "iam_policy_file": "complete-policy.json",
+      "api_gateway_stage": "webhook_staging",
+      "lambda_memory_size": 1024,
+      "environment_variables": {
+        "SM_KEY": "",
+        "DOMAIN": "",
+        "EMAIL_SRC": "STAGING",
+        "CHALICE_STAGE": "staging"
+      }
+    }
+  },
+  "lambda_functions": {
+    "fetch_offline": {
+      "lambda_timeout": 600,
+      "reserved_concurrency": 1
+    },
+    "on_sqs": {
+      "reserved_concurrency": 10
+    },
+    "on_process_sqs": {
+      "reserved_concurrency": 10
+    },
+    "on_gateway_sqs": {
+      "reserved_concurrency": 1
+    },
+    "cron_clean_up_cooldown": {
+      "reserved_concurrency": 1
+    },
+    "refresh_dynamo_eui_to_id_tbl": {
+      "reserved_concurrency": 1
+    }
+  }
+}

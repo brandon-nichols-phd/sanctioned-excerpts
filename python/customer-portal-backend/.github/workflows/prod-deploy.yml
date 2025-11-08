@@ -1,0 +1,53 @@
+name: Prod Deploy
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy-us:
+    if: startsWith(github.event.release.tag_name, 'prod-')
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
+
+      - name: Deploy
+        run: |
+          pip install boto3
+          git config --global url."https://${{ secrets.PAT }}@github".insteadOf https://github
+          cd ./app
+          ./deploy prod
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "us-east-1"
+  deploy-uae:
+    if: startsWith(github.event.release.tag_name, 'prod-')
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
+
+      - name: Deploy
+        run: |
+          pip install boto3
+          git config --global url."https://${{ secrets.PAT }}@github".insteadOf https://github
+          cd ./app
+          ./deploy uae-prod
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "me-central-1"

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleJvm" value="jbr-17" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/.." />
+            <option value="$PROJECT_DIR$/../MPChartLib" />
+            <option value="$PROJECT_DIR$/../libuvccamera" />
+            <option value="$PROJECT_DIR$/../openCVLibrary320" />
+            <option value="$PROJECT_DIR$/../usbCameraCommon" />
+            <option value="$PROJECT_DIR$/../usbCameraTest" />
+            <option value="$PROJECT_DIR$/../usbCameraTest0" />
+            <option value="$PROJECT_DIR$/../usbCameraTest2" />
+            <option value="$PROJECT_DIR$/../usbCameraTest3" />
+            <option value="$PROJECT_DIR$/../usbCameraTest4" />
+            <option value="$PROJECT_DIR$/../usbCameraTest5" />
+            <option value="$PROJECT_DIR$/../usbCameraTest6" />
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/../usbCameraTest8" />
+            <option value="$PROJECT_DIR$/../usbCameraTest9" />
+          </set>
+        </option>
+        <option name="resolveExternalAnnotations" value="false" />
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>

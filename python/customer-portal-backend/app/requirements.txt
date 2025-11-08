@@ -1,0 +1,6 @@
+dataclasses_json
+requests_futures
+aws-xray-sdk
+aws_lambda_powertools
+aws-lambda-powertools[tracer]
+git+https://github.com/PathSpot/backend-shared-library.git@1

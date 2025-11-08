@@ -1,0 +1,59 @@
+name: Deploy to Production (Rollback)
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: "Version to deploy (for rollbacks)"
+        required: true
+        type: "string"
+
+jobs:
+  deploy-us:
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+      - name: Checkout specific commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.commit }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
+
+      - name: Deploy
+        run: |
+          pip install boto3
+          git config --global url."https://${{ secrets.PAT }}@github".insteadOf https://github
+          cd ./app
+          ./deploy prod
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "us-east-1"
+  deploy-uae:
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+      - name: Checkout specific commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.commit }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
+
+      - name: Deploy
+        run: |
+          pip install boto3
+          git config --global url."https://${{ secrets.PAT }}@github".insteadOf https://github
+          cd ./app
+          ./deploy uae-prod
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "me-central-1"
